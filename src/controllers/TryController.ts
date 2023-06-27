@@ -17,6 +17,12 @@ export class TryController {
       return res.status(200).json({ url: "1439-1d71-ecb8-d4ff" });
     }
     if (tryValue === "senha5") {
+      return res.status(200).json({ url: "1439-1d71-ecb8-d4fd" });
+    }
+    if (tryValue === "senha6") {
+      return res.status(200).json({ url: "1439-1d71-ecb8-d4fc" });
+    }
+    if (tryValue === "senha7") {
       return res.status(200).json({ url: "cabo" });
     }
 
