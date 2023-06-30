@@ -37,12 +37,16 @@ export class TryController {
       return res.status(200).json({ url: "1439-1d71-ecb8-d4fg" });
     }
     if (tryValue === "ajuda") {
-      return res.status(200).json({ url: "Kr4d105s25p5Rn5f46d17s2Ar3d64s2Xe4f145d66s2Kr4d75s1Ar3d54s2Ne3s23p2Ar4s2Ar3d104s24p3Rn5f146d107s27p6" });
+      return res
+        .status(200)
+        .json({
+          url: "Kr4d105s25p5Rn5f46d17s2Ar3d64s2Xe4f145d66s2Kr4d75s1Ar3d54s2Ne3s23p2Ar4s2Ar3d104s24p3Rn5f146d107s27p6",
+        });
     }
-    if(tryValue === "INFORMACAO") {
+    if (tryValue === "INFORMACAO") {
       return res.status(200).json({ url: "1439-1d71-ecb8-d4fh" });
     }
-    if(tryValue === "RAIVA") {
+    if (tryValue === "RAIVA") {
       return res.status(200).json({ url: "1439-1d71-ecb8-d4fi" });
     }
 
