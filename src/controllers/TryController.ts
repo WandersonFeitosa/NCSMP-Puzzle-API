@@ -12,9 +12,7 @@ const logTrysSchema = new mongoose.Schema({
   phase7: Boolean,
   phase8: Boolean,
   phase9: Boolean,
-  phase10: Boolean,
-  phase11: Boolean,
-  phase12: Boolean,
+  phase5CompletionDate: Date,
 });
 
 const LogTrys = mongoose.model("LogTrys", logTrysSchema);
@@ -28,7 +26,7 @@ function sendKop(message: string) {
       console.log("Response:", response.data);
     })
     .catch((error) => {
-      console.error("Error:", error);
+      // console.error("Error:", error);
     });
 }
 
@@ -81,15 +79,29 @@ export class TryController {
     }
 
     // FASE 4
-    if (tryValue === "senha4") {
+    if (tryValue === "ELE SABE TUDO") {
       const phaseStatus = await LogTrys.findOne({ phase4: false });
       const nextPhaseStatus = await LogTrys.findOne({ phase5: false });
+
+      function getNextDayAt18(date: Date): Date {
+        const nextDay = new Date(date);
+        nextDay.setDate(date.getDate() + 1);
+        nextDay.setHours(18, 0, 0, 0);
+        return nextDay;
+      }
+      const nextDayAt18 = getNextDayAt18(new Date());
+
       if (phaseStatus) {
         return res.status(400).json({ error: "Tente Novamente" });
       }
 
       if (nextPhaseStatus) {
         await LogTrys.updateOne({ phase5: false }, { phase5: true });
+        await LogTrys.updateOne(
+          { phase5CompletionDate: "1970-01-01T00:00:00.001+00:00" },
+          { phase5CompletionDate: nextDayAt18 }
+        );
+
         sendKop("ENIGMA 4 RESOLVIDO");
       }
 
@@ -171,6 +183,18 @@ export class TryController {
 
       sendKop("ENIGMA 9 RESOLVIDO");
       return res.status(400).json({ error: "Tente Novamente" });
+    }
+  }
+  async getCompletionDate(req: Request, res: Response) {
+    const completionDate = await LogTrys.findOne({
+      _id: "64a1ca23f5c8119f8fa057d8",
+    });
+
+    console.log(completionDate);
+    if (completionDate) {
+      return res
+        .status(200)
+        .json({ completionDate: completionDate.phase5CompletionDate });
     }
   }
 }
