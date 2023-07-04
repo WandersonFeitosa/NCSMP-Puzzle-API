@@ -7,6 +7,6 @@ const routes = Router();
 routes.use(cors());
 
 routes.post("/try", new TryController().try);
-routes.get("/try", new TryController().getCompletionDate)
+routes.get("/getDate", new TryController().getCompletionDate)
 
 export default routes;

@@ -13,6 +13,7 @@ const logTrysSchema = new mongoose.Schema({
   phase8: Boolean,
   phase9: Boolean,
   phase5CompletionDate: Date,
+  phase9CompletionDate: Date,
 });
 
 const LogTrys = mongoose.model("LogTrys", logTrysSchema);
@@ -26,10 +27,16 @@ function sendKop(message: string) {
       console.log("Response:", response.data);
     })
     .catch((error) => {
+      console.log("Bot is not running");
       // console.error("Error:", error);
     });
 }
-
+function getNextDayAt18(date: Date): Date {
+  const nextDay = new Date(date);
+  nextDay.setDate(date.getDate() + 1);
+  nextDay.setHours(18, 0, 0, 0);
+  return nextDay;
+}
 export class TryController {
   async try(req: Request, res: Response) {
     const { tryValue } = req.body;
@@ -63,7 +70,7 @@ export class TryController {
     }
 
     // FASE 3
-    if (tryValue === "senha3") {
+    if (tryValue === "SEIS" || tryValue == 6 || tryValue == "6") {
       const phaseStatus = await LogTrys.findOne({ phase3: false });
       const nextPhaseStatus = await LogTrys.findOne({ phase4: false });
       if (phaseStatus) {
@@ -79,17 +86,13 @@ export class TryController {
     }
 
     // FASE 4
-    if (tryValue === "ELE SABE TUDO") {
+    if (
+      tryValue === "ELE SABE TUDO" ||
+      tryValue === "Ele Sabe Tudo" ||
+      tryValue === "Ele sabe tudo"
+    ) {
       const phaseStatus = await LogTrys.findOne({ phase4: false });
       const nextPhaseStatus = await LogTrys.findOne({ phase5: false });
-
-      function getNextDayAt18(date: Date): Date {
-        const nextDay = new Date(date);
-        nextDay.setDate(date.getDate() + 1);
-        nextDay.setHours(18, 0, 0, 0);
-        return nextDay;
-      }
-      const nextDayAt18 = getNextDayAt18(new Date());
 
       if (phaseStatus) {
         return res.status(400).json({ error: "Tente Novamente" });
@@ -97,10 +100,6 @@ export class TryController {
 
       if (nextPhaseStatus) {
         await LogTrys.updateOne({ phase5: false }, { phase5: true });
-        await LogTrys.updateOne(
-          { phase5CompletionDate: "1970-01-01T00:00:00.001+00:00" },
-          { phase5CompletionDate: nextDayAt18 }
-        );
 
         sendKop("ENIGMA 4 RESOLVIDO");
       }
@@ -109,7 +108,7 @@ export class TryController {
     }
 
     // FASE 5
-    if (tryValue === "SCULK") {
+    if (tryValue === "SCULK" || tryValue === "Sculk" || tryValue === "sculk") {
       const phaseStatus = await LogTrys.findOne({ phase5: false });
       const nextPhaseStatus = await LogTrys.findOne({ phase6: false });
       if (phaseStatus) {
@@ -124,7 +123,11 @@ export class TryController {
     }
 
     // FASE 6
-    if (tryValue === "LIBERTE") {
+    if (
+      tryValue === "LIBERTE" ||
+      tryValue === "Liberte" ||
+      tryValue === "liberte"
+    ) {
       const phaseStatus = await LogTrys.findOne({ phase6: false });
       const nextPhaseStatus = await LogTrys.findOne({ phase7: false });
       if (phaseStatus) {
@@ -136,11 +139,15 @@ export class TryController {
         sendKop("ENIGMA 6 RESOLVIDO");
       }
 
-      return res.status(200).json({ url: "1439-1d71-ecb8-d4fg" });
+      return res.status(200).json({ url: "643f-701c-cb16-63ed" });
     }
 
     // FASE 7
-    if (tryValue === "REGRET") {
+    if (
+      tryValue === "REGRET" ||
+      tryValue === "Regret" ||
+      tryValue === "regret"
+    ) {
       const phaseStatus = await LogTrys.findOne({ phase7: false });
       const nextPhaseStatus = await LogTrys.findOne({ phase8: false });
       if (phaseStatus) {
@@ -158,7 +165,11 @@ export class TryController {
     }
 
     // FASE 7
-    if (tryValue === "INFORMACAO") {
+    if (
+      tryValue === "INFORMACAO" ||
+      tryValue === "Informacao" ||
+      tryValue === "informacao"
+    ) {
       const phaseStatus = await LogTrys.findOne({ phase8: false });
       const nextPhaseStatus = await LogTrys.findOne({ phase9: false });
       if (phaseStatus) {
@@ -170,31 +181,38 @@ export class TryController {
         sendKop("ENIGMA 8 RESOLVIDO");
       }
 
-      return res.status(200).json({ url: "1439-1d71-ecb8-d4fh" });
+      return res.status(200).json({ url: "0755-06c7-bdfe-eeda" });
     }
 
     // FASE 9
-    if (tryValue === "RAIVA") {
+    if (tryValue === "RAIVA" || tryValue === "Raiva" || tryValue === "raiva") {
       const phaseStatus = await LogTrys.findOne({ phase9: false });
 
+      const nextDayAt18 = getNextDayAt18(new Date());
       if (phaseStatus) {
         return res.status(400).json({ error: "Tente Novamente" });
       }
 
+      console.log(nextDayAt18);
+
+      await LogTrys.updateOne(
+        { _id: process.env.COMPLETION_ID },
+        { phase9CompletionDate: nextDayAt18 }
+      );
       sendKop("ENIGMA 9 RESOLVIDO");
-      return res.status(400).json({ error: "Tente Novamente" });
+      return res.status(200).json({ url: "freedom" });
     }
+
+    return res.status(400).json({ error: "Tente Novamente" });
   }
   async getCompletionDate(req: Request, res: Response) {
     const completionDate = await LogTrys.findOne({
-      _id: "64a1ca23f5c8119f8fa057d8",
+      _id: process.env.COMPLETION_ID,
     });
-
-    console.log(completionDate);
     if (completionDate) {
       return res
         .status(200)
-        .json({ completionDate: completionDate.phase5CompletionDate });
+        .json({ completionDate: completionDate.phase9CompletionDate });
     }
   }
 }
