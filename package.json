@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node ./src/index.ts",
-    "build": "tsup src/index.ts --format cjs --dts --minify --clean --sourcemap --legacy-output dist/index.js",
+    "build": "tsc",
     "start": "node dist/index.js"
   },
   "author": "wanderson",
