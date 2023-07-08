@@ -188,19 +188,10 @@ export class TryController {
     if (tryValue === "RAIVA" || tryValue === "Raiva" || tryValue === "raiva") {
       const phaseStatus = await LogTrys.findOne({ phase9: false });
 
-      const nextDayAt18 = getNextDayAt18(new Date());
       if (phaseStatus) {
         return res.status(400).json({ error: "Tente Novamente" });
-      }
-
-      console.log(nextDayAt18);
-
-      await LogTrys.updateOne(
-        { _id: process.env.COMPLETION_ID },
-        { phase9CompletionDate: nextDayAt18 }
-      );
-      sendKop("ENIGMA 9 RESOLVIDO");
-      return res.status(200).json({ url: "freedom" });
+      }      
+      return res.status(200).json({ url: "descarte" });
     }
 
     return res.status(400).json({ error: "Tente Novamente" });
