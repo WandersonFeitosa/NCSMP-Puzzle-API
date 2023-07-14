@@ -10,4 +10,5 @@ const routes = (0, express_1.Router)();
 routes.use((0, cors_1.default)());
 routes.post("/try", new AttemptController_1.AttemptController().attempt);
 routes.get("/getDate", new AttemptController_1.AttemptController().getCompletionDate);
+routes.get("/checkUnlocked/:url", new AttemptController_1.AttemptController().checkUnlocked);
 exports.default = routes;
