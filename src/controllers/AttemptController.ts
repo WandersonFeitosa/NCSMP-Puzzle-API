@@ -26,7 +26,6 @@ export class AttemptController {
   async attempt(req: Request, res: Response) {
     const { tryValue } = req.body;
 
-
     const passwordArray = [tryValue];
     const phase = await AttemptTrys.findOne({ passwords: passwordArray[0] });
     const phaseNumber = phase?.phase;
@@ -83,5 +82,19 @@ export class AttemptController {
     }
 
     return res.status(400).json({ error: "Ainda não foi completado" });
+  }
+  async checkUnlocked(req: Request, res: Response) {
+    const url = req.params.url;
+    if (url == "home") {
+      return res.status(200).json({ unlocked: true });
+    }
+    const phaseObject = await AttemptTrys.findOne({ url: url });
+
+    if (!phaseObject)
+      return res.status(400).json({ error: "Fase não encontrada" });
+
+    const unlocked = phaseObject.unlocked;
+
+    res.status(200).json({ unlocked });
   }
 }
