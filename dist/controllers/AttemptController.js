@@ -85,11 +85,13 @@ class AttemptController {
             if (url == "home") {
                 return res.status(200).json({ unlocked: true });
             }
-            const phaseObject = yield AttemptTrys.findOne({ url: url });
-            if (!phaseObject)
-                return res.status(400).json({ error: "Fase não encontrada" });
-            const unlocked = phaseObject.unlocked;
-            res.status(200).json({ unlocked });
+            setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                const phaseObject = yield AttemptTrys.findOne({ url: url });
+                if (!phaseObject)
+                    return res.status(400).json({ error: "Fase não encontrada" });
+                const unlocked = phaseObject.unlocked;
+                res.status(200).json({ unlocked });
+            }), 1500);
         });
     }
 }

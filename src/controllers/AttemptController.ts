@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Request, Response } from "express";
-import mongoose from "mongoose";
+import mongoose, { set } from "mongoose";
 
 const AttemptsTrySchema = new mongoose.Schema({
   phase: Number,
@@ -88,13 +88,15 @@ export class AttemptController {
     if (url == "home") {
       return res.status(200).json({ unlocked: true });
     }
-    const phaseObject = await AttemptTrys.findOne({ url: url });
+    setTimeout(async () => {
+      const phaseObject = await AttemptTrys.findOne({ url: url });
 
-    if (!phaseObject)
-      return res.status(400).json({ error: "Fase não encontrada" });
+      if (!phaseObject)
+        return res.status(400).json({ error: "Fase não encontrada" });
 
-    const unlocked = phaseObject.unlocked;
+      const unlocked = phaseObject.unlocked;
 
-    res.status(200).json({ unlocked });
+      res.status(200).json({ unlocked });
+    }, 1500);
   }
 }
